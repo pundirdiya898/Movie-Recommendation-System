@@ -1,0 +1,292 @@
+ Movie Recommendation System
+ Import Library
+ import pandas as pd 
+import numpy as np 
+Import Dataset
+ df = pd.read_csv(r'https://raw.githubusercontent.com/YBI-Foundation/Dataset/main/Movies%20Rec
+ df.head() 
+1/9
+ https://colab.research.google.com/drive/1Euh6gFQ1LY7Xi05qNWrd3BAaQcRTreQ3#scrollTo=uy5lJCtF2I6c&printMode=true
+3/27/22, 3:40 PM
+ Project_10.ipynb - Colaboratory
+ df.info() 
+<class 'pandas.core.frame.DataFrame'> 
+RangeIndex: 4760 entries, 0 to 4759 
+Data columns (total 21 columns): 
+ #   Column                    Non-Null Count  Dtype   ---  ------                    --------------  -----   
+ 0   Movie_ID                  4760 non-null   int64   
+ 1   Movie_Title               4760 non-null   object  
+ 2   Movie_Genre               4760 non-null   object  
+ 3   Movie_Language            4760 non-null   object  
+ 4   Movie_Budget              4760 non-null   int64   
+ 5   Movie_Popularity          4760 non-null   float64 
+ 6   Movie_Release_Date        4760 non-null   object  
+ 7   Movie_Revenue             4760 non-null   int64   
+ 8   Movie_Runtime             4758 non-null   float64 
+ 9   Movie_Vote                4760 non-null   float64 
+ 10  Movie_Vote_Count          4760 non-null   int64   
+ 11  Movie_Homepage            1699 non-null   object  
+ 12  Movie_Keywords            4373 non-null   object  
+ 13  Movie_Overview            4757 non-null   object  
+ 14  Movie_Production_House    4760 non-null   object  
+ 15  Movie_Production_Country  4760 non-null   object  
+ 16  Movie_Spoken_Language     4760 non-null   object  
+ 17  Movie_Tagline             3942 non-null   object  
+ 18  Movie_Cast                4733 non-null   object  
+ 19  Movie_Crew                4760 non-null   object  
+ 20  Movie_Director            4738 non-null   object  
+dtypes: float64(3), int64(4), object(14) 
+memory usage: 781.1+ KB 
+df.shape 
+(4760, 21)
+ df.columns 
+Index(['Movie_ID', 'Movie_Title', 'Movie_Genre', 'Movie_Language', 
+       'Movie_Budget', 'Movie_Popularity', 'Movie_Release_Date', 
+       'Movie_Revenue', 'Movie_Runtime', 'Movie_Vote', 'Movie_Vote_Count', 
+       'Movie_Homepage', 'Movie_Keywords', 'Movie_Overview', 
+       'Movie_Production_House', 'Movie_Production_Country', 
+       'Movie_Spoken_Language', 'Movie_Tagline', 'Movie_Cast', 'Movie_Crew', 
+2/9
+ https://colab.research.google.com/drive/1Euh6gFQ1LY7Xi05qNWrd3BAaQcRTreQ3#scrollTo=uy5lJCtF2I6c&printMode=true
+3/27/22, 3:40 PM
+ Project_10.ipynb - Colaboratory
+       'Movie_Director'], 
+      dtype='object')
+ Get feature selection
+ df_features = df[['Movie_Genre','Movie_Keywords','Movie_Tagline', 'Movie_Cast','Movie_Directo
+ df_features.shape 
+(4760, 5)
+ df_features 
+X = df_features['Movie_Genre'] +' '+ df_features['Movie_Keywords'] +' '+ df_features['Movie_
+ X 
+0       Crime Comedy hotel new year's eve witch bet ho... 
+1       Adventure Action Science Fiction android galax... 
+2       Animation Family father son relationship harbo... 
+3/9
+ https://colab.research.google.com/drive/1Euh6gFQ1LY7Xi05qNWrd3BAaQcRTreQ3#scrollTo=uy5lJCtF2I6c&printMode=true
+3/27/22, 3:40 PM
+ Project_10.ipynb - Colaboratory
+ 3       Comedy Drama Romance vietnam veteran hippie me... 
+4       Drama male nudity female nudity adultery midli... 
+                              ...                         
+4755    Horror  The hot spot where Satan's waitin'. Li... 
+4756    Comedy Family Drama  It’s better to stand out ... 
+4757    Thriller Drama christian film sex trafficking ... 
+4758                                                  NaN 
+4759    Documentary music actors legendary perfomer cl... 
+Length: 4760, dtype: object
+ X.shape 
+(4760,)
+ Get feature text conversion to Tokens
+ from sklearn.feature_extraction.text import TfidfVectorizer 
+tfidf = TfidfVectorizer() 
+X = tfidf.fit_transform(X.values.astype('U')) 
+X.shape 
+(4760, 17230)
+ print(X) 
+  (0, 615) 
+  (0, 490) 
+  (0, 15388) 
+  (0, 9656) 
+  (0, 9446) 
+  (0, 1386) 
+  (0, 7808) 
+  (0, 1210) 
+  (0, 727) 
+  (0, 13071) 
+  (0, 15330) 
+  (0, 9030) 
+  (0, 11140) 
+  (0, 16746) 
+  (0, 5599) 
+  (0, 16708) 
+  (0, 7887) 
+  (0, 15194) 
+  (0, 11221) 
+0.16332442440635467 
+0.1432470592044258 
+0.1465401366536276 
+0.14224856242454934 
+0.16597012336237618 
+0.16896956945488018 
+0.09798734257184344 
+0.13864686902663736 
+0.1341393077591795 
+0.1432470592044258 
+0.10476931369861739 
+0.08667689319237686 
+0.0625828116285302 
+0.1765275699784532 
+0.08602811224054882 
+0.10689181227745902 
+0.1334687362036146 
+0.0981504656684201 
+0.07277173802049991 
+4/9
+ https://colab.research.google.com/drive/1Euh6gFQ1LY7Xi05qNWrd3BAaQcRTreQ3#scrollTo=uy5lJCtF2I6c&printMode=true
+3/27/22, 3:40 PM
+ Project_10.ipynb - Colaboratory
+  (0, 3870) 
+  (0, 5486) 
+  (0, 7056) 
+  (0, 7439) 
+  (0, 1491) 
+  (0, 9188) 
+  : 
+: 
+0.11997386602571485 
+0.11453090487077869 
+0.19820744065844487 
+0.14753644208200442 
+0.19710973123131825 
+0.1518500145987359 
+  (4757, 5442) 0.1255861026654974 
+  (4757, 2961) 0.1627090765826581 
+  (4757, 8446) 0.23518853371060558 
+  (4757, 6924) 0.17085476930293292 
+  (4757, 8361) 0.17477845178021734 
+  (4757, 15278) 0.07666229673756349 
+  (4757, 15359) 0.09762699079562911 
+  (4757, 7633) 0.11485993480780513 
+  (4757, 10876) 0.1454417742239216 
+  (4757, 4484) 0.05684420359018263 
+  (4758, 10730) 1.0 
+  (4759, 11243) 0.3394148936186051 
+  (4759, 11686) 0.3394148936186051 
+  (4759, 204) 
+0.3237317182188824 
+  (4759, 8884) 0.303973253936778
+  (4759, 14038) 0.3237317182188824 
+  (4759, 3052) 0.28123797738908846 
+  (4759, 7115) 0.26414812079534705 
+  (4759, 10741) 0.3126043281885338 
+  (4759, 4348) 0.18371642450513317 
+  (4759, 14027) 0.20080628109887458 
+  (4759, 5677) 0.19530704725526524 
+  (4759, 15406) 0.19625049572950054 
+  (4759, 1486) 0.21193367112922323 
+  (4759, 10646) 0.15921842405777206 
+Get Similarity Score using Cosine Similarity
+ from sklearn.metrics.pairwise import cosine_similarity 
+Similarity_Score = cosine_similarity(X) 
+Similarity_Score 
+array([[1.        , 0.01352735, 0.03572739, ..., 0.        , 0.        , 
+        0.        ], 
+       [0.01352735, 1.        , 0.00807444, ..., 0.        , 0.        , 
+        0.        ], 
+       [0.03572739, 0.00807444, 1.        , ..., 0.        , 0.        , 
+        0.        ], 
+       ..., 
+       [0.        , 0.        , 0.        , ..., 1.        , 0.        , 
+        0.        ], 
+5/9
+ https://colab.research.google.com/drive/1Euh6gFQ1LY7Xi05qNWrd3BAaQcRTreQ3#scrollTo=uy5lJCtF2I6c&printMode=true
+3/27/22, 3:40 PM
+ Project_10.ipynb - Colaboratory
+       [0.        , 0.        , 0.        , ..., 0.        , 1.        , 
+        0.        ], 
+       [0.        , 0.        , 0.        , ..., 0.        , 0.        , 
+        1.        ]])
+ Similarity_Score.shape 
+(4760, 4760)
+ Get Movie Name as input from user and validate for closest
+ spelling
+ Favourite_Movie_Name = input('Enter your favourite movie name: ') 
+Enter your favourite movie name: Shole 
+All_Movies_Title_List = df['Movie_Title'].tolist() 
+import difflib 
+Movie_Recommendation = difflib.get_close_matches(Favourite_Movie_Name,All_Movies_Title_List) 
+print(Movie_Recommendation) 
+['Stolen', 'Soldier', 'Show Me'] 
+Close_Match = Movie_Recommendation[0] 
+print(Close_Match) 
+Stolen 
+Index_of_Close_Match_Movie = df[df.Movie_Title == Close_Match]['Movie_ID'].values[0] 
+Getting a list of similar movies
+ Recommendation_Score = list(enumerate(Similarity_Score[Index_of_Close_Match_Movie])) 
+print(Recommendation_Score) 
+[(0, 0.031144069926809584), (1, 0.0), (2, 0.0), (3, 0.0), (4, 0.0), (5, 0.0), (6, 0.0), 
+6/9
+ https://colab.research.google.com/drive/1Euh6gFQ1LY7Xi05qNWrd3BAaQcRTreQ3#scrollTo=uy5lJCtF2I6c&printMode=true
+Project_10.ipynb - Colaboratory
+ 3/27/22, 3:40 PM
+ len(Recommendation_Score) 
+4760
+ Get all movie sort based on Recommendation Score wrt
+ Favourite Movie
+ # sorting the movie based on their similarity score 
+Sorted_Similar_Movies = sorted(Recommendation_Score,key=lambda x:x[1],reverse=True) 
+print(Sorted_Similar_Movies) 
+[(4072, 1.0000000000000002), (1161, 0.10347088678803612), (2889, 0.07991009911687838), (
+ # print the name of similar mivies based on the index 
+print('Top 30 Movies Suggested for you : \n') 
+i=1 
+for movie in Sorted_Similar_Movies: 
+index= movie[0] 
+title_from_index = df[df.index==index]['Movie_Title'].values[0] 
+if(i<31): 
+print(i,'.',title_from_index) 
+i+=1 
+Top 30 Movies Suggested for you :  
+1 . The Gatekeepers 
+2 . Waltz with Bashir 
+3 . I Love Your Work 
+4 . Top Spin 
+5 . The Hadza:  Last of the First
+ 6 . The Case of the Grinning Cat 
+7 . Mad Hot Ballroom 
+8 . Taxman 
+9 . Butterfly Girl 
+10 . Counting 
+11 . Men in Black 3 
+12 . Head Over Heels 
+13 . You Don't Mess with the Zohan 
+14 . Gun Shy 
+15 . Sisters in Law 
+16 . Solomon and Sheba 
+17 . Food Chains 
+18 . The Trials Of Darryl Hunt 
+19 . My Fellow Americans 
+20 . Peace, Propaganda & the Promised Land 
+7/9
+ https://colab.research.google.com/drive/1Euh6gFQ1LY7Xi05qNWrd3BAaQcRTreQ3#scrollTo=uy5lJCtF2I6c&printMode=true
+3/27/22, 3:40 PM
+ Project_10.ipynb - Colaboratory
+ 21 . A LEGO Brickumentary 
+22 . The Sting 
+23 . Wild Card 
+24 . The Charge of the Light Brigade 
+25 . Heist 
+26 . Antarctic Edge: 70° South 
+27 . The Perfect Match 
+28 . How to Lose a Guy in 10 Days
+ 29 . Nothing to Lose 
+30 . Wordplay 
+Top 10 Movie Recmmendation System
+ Movie_Name = input('Enter your favourite movie name:')
+ list_of_all_titles= df['Movie_Title'].tolist()
+ Find_Close_Match = difflib.get_close_matches(Movie_Name, list_of_all_titles)
+ Close_Match = Find_Close_Match[0]
+ Index_of_Movie = df[df.Movie_Title==Close_Match]['Movie_ID'].values[0]
+ Recommendation_Score=list(enumerate(Similarity_Score[Index_of_Movie]))
+ sorted_similar_movies = sorted(Recommendation_Score,key=lambda x:x[1],reverse=True)
+ print('Top 10 Movie Suggested For You:\n')
+ i=1
+ for movie in sorted_similar_movies:
+ index = movie[0]
+ title_from_index = df[df.Movie_ID==index]['Movie_Title'].values
+ if(i<11):
+ print(i,'.',title_from_index)
+ i+=1  
+Enter your favourite movie name:avtaar 
+Top 10 Movie Suggested For You: 
+1 . ['Avatar'] 
+2 . ['The Girl on the Train'] 
+3 . ['Act of Valor'] 
+4 . ['Donnie Darko'] 
+5 . ['Precious'] 
+6 . ['Freaky Friday'] 
+7 . ['The Opposite Sex'] 
+8 . ['Heaven is for Real'] 
+9 . ['Run Lola Run'] 
+10 . ['Elizabethtown'] 
